@@ -6,6 +6,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Post[]>
 ) {
-  const posts = await getPosts();
-  res.json(posts);
+  try {
+    const page = Number(req.query.page) || 1;
+    const posts = await getPosts(page);
+    res.json(posts);
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    res.status(500).json([]);
+  }
 }

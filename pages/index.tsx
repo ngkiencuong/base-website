@@ -1,28 +1,20 @@
 import Layout from "../components/LayOut";
-import PostCard from "../components/PostCard";
+import PostList from "../components/PostList";
 import { Post } from "../types";
 
-export async function getServerSideProps() {
-  const response = await fetch("http://localhost:3000/api/posts");
+export async function getServerSideProps({ query }) {
+  const page = Number(query.page) || 1;
+  const response = await fetch(`http://localhost:3000/api/posts?page=${page}`);
   const posts = await response.json();
   return {
-    props: { posts }
+    props: { posts, page }
   };
 }
 
-export default function Home({ posts }: { posts: Post[] }) {
+export default function Home({ posts, page }: { posts: Post[], page: number }) {
   return (
     <Layout>
-      {posts.map(post => (
-        <PostCard
-          key={post.id}
-          id={post.id}
-          date={post.date}
-          slug={post.slug}
-          title={post.title}
-          excerpt={post.excerpt}
-        />
-      ))}
+      <PostList posts={posts} currentPage={page} />
     </Layout>
   );
 }

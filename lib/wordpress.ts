@@ -1,6 +1,6 @@
 import { ApiPost, Post } from "../types";
 
-const WP_API = "https://techcrunch.com/wp-json/wp/v2";
+const WP_API = process.env.WORDPRESS_API_URL;
 
 function transformPost(post: ApiPost): Post {
   return {
@@ -12,8 +12,16 @@ function transformPost(post: ApiPost): Post {
   };
 }
 
-export async function getPosts(): Promise<Post[]> {
-  const response = await fetch(`${WP_API}/posts?per_page=5`);
-  const posts: ApiPost[] = await response.json();
-  return posts.map(transformPost);
+export async function getPosts(page = 1): Promise<Post[]> {
+  try {
+    const response = await fetch(`${WP_API}/posts?per_page=5&page=${page}`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch posts");
+    }
+    const posts: ApiPost[] = await response.json();
+    return posts.map(transformPost);
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return [];
+  }
 }
