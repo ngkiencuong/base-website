@@ -8,6 +8,9 @@ export interface ApiPost {
   excerpt: {
     rendered: string;
   };
+  content: {
+    rendered: string;
+  };
 }
 
 export interface Post {
@@ -16,4 +19,5 @@ export interface Post {
   slug: string;
   title: string;
   excerpt: string;
+  content: string;
 }
